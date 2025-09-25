@@ -37,9 +37,12 @@
   },
   "scripts": {
     "build": "tsc -b && vite build",
+    "build:static": "tsc -b && vite build --config vite.static.config.ts",
     "cf-typegen": "wrangler types",
     "check": "tsc && vite build && wrangler deploy --dry-run",
     "dev": "vite",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "deploy": "wrangler deploy",
+    "deploy:static": "npm run build:static"
   }
 }
