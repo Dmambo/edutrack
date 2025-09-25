@@ -1,0 +1,4 @@
+-- Rollback migration 3
+-- This migration cannot be easily rolled back as it changes the fundamental structure
+-- Users would need to be recreated with mocha_user_id
+-- This is a destructive migration
