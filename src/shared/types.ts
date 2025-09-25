@@ -106,8 +106,8 @@ export type CorrectionRequestType = z.infer<typeof CorrectionRequestSchema>;
 
 // API request/response schemas
 export const CreateUserSchema = z.object({
-  mocha_user_id: z.string(),
   email: z.string().email(),
+  password: z.string().min(6),
   first_name: z.string().optional(),
   last_name: z.string().optional(),
   role: UserRole,

@@ -12,8 +12,7 @@ import {
   verifyPassword, 
   generateToken, 
   verifyToken, 
-  extractTokenFromHeader,
-  User 
+  extractTokenFromHeader
 } from "@/shared/auth";
 
 const app = new Hono<{ Bindings: Env }>();

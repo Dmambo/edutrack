@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useAuth } from '@/react-app/contexts/AuthContext';
 import { useApi } from '@/react-app/hooks/useApi';
 import Layout from '@/react-app/components/Layout';
-import { Award, TrendingUp, BookOpen, Plus, Edit, Trash2 } from 'lucide-react';
+import { Plus } from 'lucide-react';
 
 interface PerformanceRecord {
   id: number;
@@ -45,7 +45,7 @@ export default function Performance() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
-  const { data: classesData, loading: classesLoading } = useApi<Class[]>('/api/classes');
+  const { data: classesData } = useApi<Class[]>('/api/classes');
   const { data: performanceData, loading: performanceLoading } = useApi<PerformanceRecord[]>(
     `/api/performance?class_id=${selectedClass}&student_id=${selectedStudent}`,
     [selectedClass, selectedStudent]
@@ -367,6 +367,140 @@ export default function Performance() {
             </div>
           )}
         </div>
+
+        {/* Add Performance Record Modal */}
+        {showAddForm && (
+          <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
+            <div className="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
+              <div className="mt-3">
+                <h3 className="text-lg font-medium text-gray-900 mb-4">Add Performance Record</h3>
+                <form onSubmit={handleSubmit} className="space-y-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Student</label>
+                    <select
+                      value={formData.student_id}
+                      onChange={(e) => setFormData({ ...formData, student_id: e.target.value })}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                      required
+                    >
+                      <option value="">Select Student</option>
+                      {students.map((student) => (
+                        <option key={student.id} value={student.id}>
+                          {student.first_name} {student.last_name}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Class</label>
+                    <select
+                      value={formData.class_id}
+                      onChange={(e) => setFormData({ ...formData, class_id: e.target.value })}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                      required
+                    >
+                      <option value="">Select Class</option>
+                      {classes.map((cls) => (
+                        <option key={cls.id} value={cls.id}>
+                          {cls.name} ({cls.code})
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Assessment Type</label>
+                    <select
+                      value={formData.assessment_type}
+                      onChange={(e) => setFormData({ ...formData, assessment_type: e.target.value as any })}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                    >
+                      <option value="exam">Exam</option>
+                      <option value="assignment">Assignment</option>
+                      <option value="quiz">Quiz</option>
+                      <option value="project">Project</option>
+                      <option value="homework">Homework</option>
+                    </select>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Assessment Name</label>
+                    <input
+                      type="text"
+                      value={formData.assessment_name}
+                      onChange={(e) => setFormData({ ...formData, assessment_name: e.target.value })}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                      required
+                    />
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">Obtained Marks</label>
+                      <input
+                        type="number"
+                        step="0.01"
+                        value={formData.obtained_marks}
+                        onChange={(e) => setFormData({ ...formData, obtained_marks: e.target.value })}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                        required
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">Total Marks</label>
+                      <input
+                        type="number"
+                        step="0.01"
+                        value={formData.total_marks}
+                        onChange={(e) => setFormData({ ...formData, total_marks: e.target.value })}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                        required
+                      />
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Assessment Date</label>
+                    <input
+                      type="date"
+                      value={formData.assessment_date}
+                      onChange={(e) => setFormData({ ...formData, assessment_date: e.target.value })}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Remarks (Optional)</label>
+                    <textarea
+                      value={formData.remarks}
+                      onChange={(e) => setFormData({ ...formData, remarks: e.target.value })}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                      rows={3}
+                    />
+                  </div>
+
+                  <div className="flex justify-end space-x-3">
+                    <button
+                      type="button"
+                      onClick={() => setShowAddForm(false)}
+                      className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 border border-gray-300 rounded-md hover:bg-gray-200"
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      type="submit"
+                      disabled={loading}
+                      className="px-4 py-2 text-sm font-medium text-white bg-indigo-600 border border-transparent rounded-md hover:bg-indigo-700 disabled:opacity-50"
+                    >
+                      {loading ? 'Adding...' : 'Add Record'}
+                    </button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </Layout>
   );

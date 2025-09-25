@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useAuth } from '@/react-app/contexts/AuthContext';
 import { useApi } from '@/react-app/hooks/useApi';
 import Layout from '@/react-app/components/Layout';
-import { Calendar, Users, CheckCircle, XCircle, Clock, AlertCircle } from 'lucide-react';
+import { Users, CheckCircle, XCircle, Clock, AlertCircle } from 'lucide-react';
 
 interface AttendanceRecord {
   id: number;
@@ -32,7 +32,7 @@ export default function Attendance() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
-  const { data: classesData, loading: classesLoading } = useApi<Class[]>('/api/classes');
+  const { data: classesData } = useApi<Class[]>('/api/classes');
   const { data: attendanceData, loading: attendanceLoading } = useApi<AttendanceRecord[]>(
     `/api/attendance?class_id=${selectedClass}&date=${selectedDate}`,
     [selectedClass, selectedDate]
